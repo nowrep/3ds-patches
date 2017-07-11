@@ -91,10 +91,17 @@ def patch_home_menu_eu_11_4():
     end_patch()
 
 def patch_home_menu_eu_11_5():
-    return
-    # TODO
-    #begin_patch("0004003000009802", 0x205000, 0x206000)
-    #end_patch()
+    begin_patch("0004003000009802", 0x20512C, 0x20592C)
+
+    ## Battery percent in statusbar
+    # Update date while updating minutes
+    replace_instruction(0x000EF190, "mov r5, 1")
+    # Replace date string with battery percent
+    add_function_call(0x000EF2CC, "patches/statusbattery.s", "statusbattery.bin", {
+        0xdead0000 : 0x33C14C
+    });
+
+    end_patch()
 
 # 11.4 patches
 firmver = "11.4"
