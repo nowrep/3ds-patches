@@ -1,5 +1,5 @@
 .arm.little
-.create "date.bin", 0
+.create "statusbattery.bin", 0
 
 .macro addr, reg, func
     add reg, pc, #func-.-8

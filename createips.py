@@ -84,7 +84,7 @@ def patch_home_menu_eu_11_4():
     # Update date while updating minutes
     replace_instruction(0x000EF1D0, "mov r5, 1")
     # Replace date string with battery percent
-    add_function_call(0x000EF30C, "date.s", "date.bin", {
+    add_function_call(0x000EF30C, "statusbattery.s", "statusbattery.bin", {
         0xdead0000 : 0x33C14C
     });
 
