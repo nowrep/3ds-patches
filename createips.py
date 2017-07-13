@@ -99,6 +99,15 @@ def patch_statusbatpercent_eu_11_5():
     });
     end_patch()
 
+def patch_statusbaticon_eu_11_4():
+    """ Battery icon in statusbar shows each bar as 25% of charge """
+    begin_patch("0004003000009802", 0x2050C4, 0x2058C4)
+    # Replace call to GetBatteryLevel
+    add_function_call(0x000FF3EC, "src/statusbatteryicon.s", "statusbatteryicon.bin", {
+        0xdead0000 : 0x33C14C
+    });
+    end_patch()
+
 def patch_statusbaticon_eu_11_5():
     """ Battery icon in statusbar shows each bar as 25% of charge """
     begin_patch("0004003000009802", 0x20512C, 0x20592C)
@@ -115,5 +124,7 @@ firmver = "11.5"
 patch_statusbatpercent_eu_11_5()
 
 patchname = "statusbaticon"
+firmver = "11.4"
+patch_statusbaticon_eu_11_4()
 firmver = "11.5"
 patch_statusbaticon_eu_11_5()
