@@ -7,6 +7,7 @@ from contextlib import suppress
 
 free_addr = 0x205000
 
+patchname = ""
 firmver = ""
 titleid = ""
 text_end = 0x0
@@ -21,21 +22,20 @@ def begin_patch(_titleid, _text_end, _text_padding_end):
     text_padding_end = _text_padding_end
 
 def end_patch():
-    global patch
+    global patch, firmver, patchname, titleid
     patch += str.encode("EOF");
-    with suppress(FileExistsError):
-        os.mkdir(firmver)
-        os.mkdir(firmver + "/" + titleid)
-    open(firmver + "/" + titleid + "/code.ips", "wb").write(patch)
+    with suppress(FileExistsError): os.mkdir("patches")
+    with suppress(FileExistsError): os.mkdir("patches/" + patchname)
+    with suppress(FileExistsError): os.mkdir("patches/" + patchname + "/" + firmver)
+    with suppress(FileExistsError): os.mkdir("patches/" + patchname + "/" + firmver + "/" + titleid)
+    open("patches/" + patchname + "/" + firmver + "/" + titleid + "/code.ips", "wb").write(patch)
 
 def make_branch_link(src, dst):
     opcode = 0xEB000000 | ((((dst - src) >> 2) - 2) & 0xFFFFFF)
     return struct.pack("<I", opcode)
 
 def add_function_call(addr, inputfile, outputfile, substitutions = {}):
-    global patch
-    global text_end
-    global text_padding_end
+    global patch, text_end, text_padding_end
     if subprocess.call(["armips", inputfile]) != 0:
         exit(1)
 
@@ -77,36 +77,30 @@ def replace_instruction(addr, instruction):
     patch += struct.pack(">H", 0x0004)
     patch += make_instruction(instruction)
 
-def patch_home_menu_eu_11_4():
+def patch_statusbatpercent_eu_11_4():
+    """ Battery percent in statusbar """
     begin_patch("0004003000009802", 0x2050C4, 0x2058C4)
-
-    ## Battery percent in statusbar
     # Update date while updating minutes
     replace_instruction(0x000EF1D0, "mov r5, 1")
     # Replace date string with battery percent
-    add_function_call(0x000EF30C, "patches/statusbattery.s", "statusbattery.bin", {
+    add_function_call(0x000EF30C, "src/statusbattery.s", "statusbattery.bin", {
         0xdead0000 : 0x33C14C
     });
-
     end_patch()
 
-def patch_home_menu_eu_11_5():
+def patch_statusbatpercent_eu_11_5():
+    """ Battery percent in statusbar """
     begin_patch("0004003000009802", 0x20512C, 0x20592C)
-
-    ## Battery percent in statusbar
     # Update date while updating minutes
     replace_instruction(0x000EF190, "mov r5, 1")
     # Replace date string with battery percent
-    add_function_call(0x000EF2CC, "patches/statusbattery.s", "statusbattery.bin", {
+    add_function_call(0x000EF2CC, "src/statusbattery.s", "statusbattery.bin", {
         0xdead0000 : 0x33C14C
     });
-
     end_patch()
 
-# 11.4 patches
+patchname = "statusbatpercent"
 firmver = "11.4"
-patch_home_menu_eu_11_4()
-
-# 11.5 patches
+patch_statusbatpercent_eu_11_4()
 firmver = "11.5"
-patch_home_menu_eu_11_5()
+patch_statusbatpercent_eu_11_5()
