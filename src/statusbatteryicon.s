@@ -16,6 +16,7 @@ _start:
 
     stmfd sp!, {r1-r2,lr}
 
+    mov r0, 30 ; cache 30 calls - called each second
     bl getBatteryLevel
 
     cmp r0, 0

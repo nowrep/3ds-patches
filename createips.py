@@ -5,8 +5,6 @@ import struct
 import subprocess
 from contextlib import suppress
 
-free_addr = 0x205000
-
 patchname = ""
 firmver = ""
 titleid = ""
@@ -98,7 +96,8 @@ def patch_statusbatpercent_eu_11_4():
     replace_instruction(0x000EF1D0, "mov r5, 1")
     # Replace date string with battery percent
     add_function_call(0x000EF30C, "src/statusbattery.s", "statusbattery.bin", {
-        0xdead0000 : 0x33C14C
+        0xdead0000 : 0x33C14C,
+        0xdead0001 : 0x3412D9
     });
     end_patch()
 
@@ -109,7 +108,8 @@ def patch_statusbatpercent_eu_11_5():
     replace_instruction(0x000EF190, "mov r5, 1")
     # Replace date string with battery percent
     add_function_call(0x000EF2CC, "src/statusbattery.s", "statusbattery.bin", {
-        0xdead0000 : 0x33C14C
+        0xdead0000 : 0x33C14C,
+        0xdead0001 : 0x3412D9
     });
     end_patch()
 
@@ -118,7 +118,8 @@ def patch_statusbaticon_eu_11_4():
     begin_patch("0004003000009802", 0x2050C4, 0x2058C4)
     # Replace call to GetBatteryLevel
     add_function_call(0x000EF3EC, "src/statusbatteryicon.s", "statusbatteryicon.bin", {
-        0xdead0000 : 0x33C14C
+        0xdead0000 : 0x33C14C,
+        0xdead0001 : 0x3412D9
     });
     end_patch()
 
@@ -127,7 +128,8 @@ def patch_statusbaticon_eu_11_5():
     begin_patch("0004003000009802", 0x20512C, 0x20592C)
     # Replace call to GetBatteryLevel
     add_function_call(0x000EF3AC, "src/statusbatteryicon.s", "statusbatteryicon.bin", {
-        0xdead0000 : 0x33C14C
+        0xdead0000 : 0x33C14C,
+        0xdead0001 : 0x3412D9
     });
     end_patch()
 
