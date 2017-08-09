@@ -24,11 +24,11 @@ def begin_patch(_titleid, _text_end, _text_padding_end):
 def end_patch():
     global patch, firmver, patchname, titleid
     patch += str.encode("EOF");
-    with suppress(FileExistsError): os.mkdir("patches")
-    with suppress(FileExistsError): os.mkdir("patches/" + patchname)
-    with suppress(FileExistsError): os.mkdir("patches/" + patchname + "/" + firmver)
-    with suppress(FileExistsError): os.mkdir("patches/" + patchname + "/" + firmver + "/" + titleid)
-    open("patches/" + patchname + "/" + firmver + "/" + titleid + "/code.ips", "wb").write(patch)
+    with suppress(FileExistsError): os.mkdir("build")
+    with suppress(FileExistsError): os.mkdir("build/" + patchname)
+    with suppress(FileExistsError): os.mkdir("build/" + patchname + "/" + firmver)
+    with suppress(FileExistsError): os.mkdir("build/" + patchname + "/" + firmver + "/" + titleid)
+    open("build/" + patchname + "/" + firmver + "/" + titleid + "/code.ips", "wb").write(patch)
 
 def make_branch_link(src, dst):
     opcode = 0xEB000000 | ((((dst - src) >> 2) - 2) & 0xFFFFFF)
