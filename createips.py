@@ -14,6 +14,9 @@ text_end = 0x0
 text_padding_end = 0x0
 patch = bytearray()
 
+def current_patch_directory():
+    return "build/" + patchname + "/" + firmver + "/" + titleid
+
 def begin_patch(_titleid, _text_end, _text_padding_end):
     global patch, titleid, text_end, text_padding_end
     patch = str.encode("PATCH");
@@ -28,7 +31,7 @@ def end_patch():
     with suppress(FileExistsError): os.mkdir("build/" + patchname)
     with suppress(FileExistsError): os.mkdir("build/" + patchname + "/" + firmver)
     with suppress(FileExistsError): os.mkdir("build/" + patchname + "/" + firmver + "/" + titleid)
-    open("build/" + patchname + "/" + firmver + "/" + titleid + "/code.ips", "wb").write(patch)
+    open(current_patch_directory() + "/code.ips", "wb").write(patch)
 
 def make_branch_link(src, dst):
     opcode = 0xEB000000 | ((((dst - src) >> 2) - 2) & 0xFFFFFF)
@@ -77,6 +80,17 @@ def replace_instruction(addr, instruction):
     patch += struct.pack(">H", 0x0004)
     patch += make_instruction(instruction)
 
+def exheader_add_service(exheader, service):
+    for i in range(0x250, 0x350, 8):
+        if exheader[i:i+8] == bytearray(8):
+            exheader[i:i+8] = bytearray(service, "ascii")
+            break
+    for i in range(0x650, 0x750, 8):
+        if exheader[i:i+8] == bytearray(8):
+            exheader[i:i+8] = bytearray(service, "ascii")
+            break
+    return exheader
+
 def patch_statusbatpercent_eu_11_4():
     """ Battery percent in statusbar """
     begin_patch("0004003000009802", 0x2050C4, 0x2058C4)
@@ -117,14 +131,28 @@ def patch_statusbaticon_eu_11_5():
     });
     end_patch()
 
+def patch_sm_home_eu_11_4():
+    exheader = bytearray(open("home-eu-11.4-exheader.bin", "rb").read())
+    exheader_patched = exheader_add_service(exheader, "mcu::HWC")
+    open(current_patch_directory() + "/exheader.bin", "wb").write(exheader_patched)
+
+def patch_sm_home_eu_11_5():
+    exheader = bytearray(open("home-eu-11.5-exheader.bin", "rb").read())
+    exheader_patched = exheader_add_service(exheader, "mcu::HWC")
+    open(current_patch_directory() + "/exheader.bin", "wb").write(exheader_patched)
+
 patchname = "statusbatpercent"
 firmver = "11.4"
 patch_statusbatpercent_eu_11_4()
+patch_sm_home_eu_11_4()
 firmver = "11.5"
 patch_statusbatpercent_eu_11_5()
+patch_sm_home_eu_11_5()
 
 patchname = "statusbaticon"
 firmver = "11.4"
 patch_statusbaticon_eu_11_4()
+patch_sm_home_eu_11_4()
 firmver = "11.5"
 patch_statusbaticon_eu_11_5()
+patch_sm_home_eu_11_5()
