@@ -6,6 +6,9 @@ getBatteryLevel:
 
     mov r5, r0 ; cache # calls
 
+    cmp r5, 0
+    beq getBatteryLevel_update
+
     load r0, BatteryCachePtr
     ldr r0, [r0]
     mov r1, r0, lsl 16 ; counter

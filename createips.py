@@ -93,7 +93,7 @@ def patch_statusbatpercent_eu_11_4():
     """ Battery percent in statusbar """
     begin_patch("0004003000009802", 0x2050C4, 0x2058C4)
     # Update date while updating minutes
-    replace_instruction(0x000EF1D0, "mov r5, 1")
+    replace_instruction(0x000EF1D0, "add r5, r5, 1")
     # Replace date string with battery percent
     add_function_call(0x000EF30C, "src/statusbattery.s", "statusbattery.bin", {
         0xdead0000 : 0x33C14C,
@@ -105,7 +105,7 @@ def patch_statusbatpercent_eu_11_5():
     """ Battery percent in statusbar """
     begin_patch("0004003000009802", 0x20512C, 0x20592C)
     # Update date while updating minutes
-    replace_instruction(0x000EF190, "mov r5, 1")
+    replace_instruction(0x000EF190, "add r5, r5, 1")
     # Replace date string with battery percent
     add_function_call(0x000EF2CC, "src/statusbattery.s", "statusbattery.bin", {
         0xdead0000 : 0x33C14C,

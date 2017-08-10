@@ -19,7 +19,9 @@ _start:
     stmfd sp!, {r0-r12,lr}
     add r12, sp, 14 * 0x4 ; get old SP
 
-    mov r0, 2000 ; cache 2000 calls - called each frame
+    cmp r5, 2      ; if update was forced (eg. after suspend/sleep)
+    moveq r0, 0    ; force battery level update
+    movne r0, 2000 ; otherwise cache 2000 calls - called each frame
     bl getBatteryLevel
 
     cmp r0, 0
