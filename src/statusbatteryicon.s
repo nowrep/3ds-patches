@@ -16,7 +16,9 @@ _start:
 
     stmfd sp!, {r1-r2,lr}
 
-    mov r0, 30 ; cache 30 calls - called each second
+    cmp r5, 1    ; if update was forced (eg. after suspend/sleep)
+    moveq r0, 0  ; force battery level update
+    movne r0, 30 ; otherwise cache 30 calls - called every second
     bl getBatteryLevel
 
     cmp r0, 0
