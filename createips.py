@@ -113,6 +113,9 @@ def patch_statusbatpercent_eu_11_5():
     });
     end_patch()
 
+def patch_statusbatpercent_eu_11_6():
+    patch_statusbatpercent_eu_11_5()
+
 def patch_statusbaticon_eu_11_4():
     """ Battery icon in statusbar shows each bar as 25% of charge """
     begin_patch("0004003000009802", 0x2050C4, 0x2058C4)
@@ -133,6 +136,9 @@ def patch_statusbaticon_eu_11_5():
     });
     end_patch()
 
+def patch_statusbaticon_eu_11_6():
+    patch_statusbaticon_eu_11_5()
+
 def patch_sm_home_eu_11_4():
     exheader = bytearray(open("home-eu-11.4-exheader.bin", "rb").read())
     exheader_patched = exheader_add_service(exheader, "mcu::HWC")
@@ -143,6 +149,9 @@ def patch_sm_home_eu_11_5():
     exheader_patched = exheader_add_service(exheader, "mcu::HWC")
     open(current_patch_directory() + "/exheader.bin", "wb").write(exheader_patched)
 
+def patch_sm_home_eu_11_6():
+    patch_sm_home_eu_11_5()
+
 patchname = "statusbatpercent"
 firmver = "11.4"
 patch_statusbatpercent_eu_11_4()
@@ -150,6 +159,9 @@ patch_sm_home_eu_11_4()
 firmver = "11.5"
 patch_statusbatpercent_eu_11_5()
 patch_sm_home_eu_11_5()
+firmver = "11.6"
+patch_statusbatpercent_eu_11_6()
+patch_sm_home_eu_11_6()
 
 patchname = "statusbaticon"
 firmver = "11.4"
@@ -158,3 +170,6 @@ patch_sm_home_eu_11_4()
 firmver = "11.5"
 patch_statusbaticon_eu_11_5()
 patch_sm_home_eu_11_5()
+firmver = "11.6"
+patch_statusbaticon_eu_11_6()
+patch_sm_home_eu_11_6()
