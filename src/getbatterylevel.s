@@ -89,5 +89,5 @@ getBatteryLevel_out:
     GetServiceHandleCommand : .word 0x50100
     GetBatteryLevelCommand  : .word 0x50000
     MCUHWCServiceName       : .dcb "mcu::HWC"
-    SrvHandlePtr            : .word 0xdead0000
-    BatteryCachePtr         : .word 0xdead0001
+    SrvHandlePtr            : .word 0xdead0000 ; "srv:" ptr
+    BatteryCachePtr         : .word 0xdead0001 ; free addr in data section
